@@ -1,16 +1,14 @@
 /* ════════════════════════════════════════
-   BUDARE GRILL — APP DE PEDIDOS v2.0
+   BUDARE GRILL — APP DE PEDIDOS v2.1
    Módulos: menú / carrito / UI / WhatsApp
+   Corrección: checkout paso 2 siempre avanza si hay nombre + pago
 ════════════════════════════════════════ */
 
-/* ─── MENÚ ─────────────────────────── */
 const MENU = [
-  // Top sellers
   { id:'pc', cat:'top', name:'Personal Completo', price:32000, desc:'Res al barril + chorizo artesanal. El plato estrella de Budare.', img:'🥩', badges:['hot','star'] },
   { id:'p2', cat:'top', name:'Parrilla para 2', price:58000, desc:'Res + cerdo + 2 chorizos. Guarnición doble incluida.', img:'🥩', badges:['hot'] },
   { id:'lp', cat:'top', name:'La Patrona', price:32000, desc:'Res · Cheddar · Tocino caramelizado · Salsa Budare.', img:'🍔', badges:['star'] },
   { id:'br', cat:'top', name:'Las Braseras', price:27000, desc:'Papas cargadas con proteína al carbón + mozzarella fundida.', img:'🍟', badges:['new'] },
-  // Parrillas
   { id:'bas', cat:'parrilla', name:'El Básico del Barril', price:25000, desc:'Res o cerdo al barril. Papa nevada + yuca + ají.', img:'🔥', badges:[] },
   { id:'pc2', cat:'parrilla', name:'Personal Completo', price:32000, desc:'Res 220g + chorizo artesanal + papa + yuca + guacamole + arepa.', img:'🥩', badges:['hot','star'] },
   { id:'cl', cat:'parrilla', name:'La Completa Llanera', price:42000, desc:'Res + cerdo + chorizo artesanal. Tres proteínas, un barril.', img:'🍖', badges:['new'] },
@@ -20,12 +18,10 @@ const MENU = [
   { id:'fc', cat:'parrilla', name:'Familiar Clásica (4 pax)', price:110000, desc:'700g res + 200g cerdo + 3 chorizos + papa + yuca.', img:'👨‍👩‍👧‍👦', badges:[] },
   { id:'fco', cat:'parrilla', name:'Familiar Completa (4 pax)', price:140000, desc:'700g res + cerdo + 2 chorizos + 2 morcillas + costillas.', img:'🏆', badges:['star'] },
   { id:'fm', cat:'parrilla', name:'Familiar Mixta (4 pax)', price:130000, desc:'500g res + 300g cerdo + 200g pollo + 2 chorizos.', img:'🍖', badges:[] },
-  { id:'eje', cat:'parrilla', name:'Ejecutivo Budare', price:22000, desc:'90g carne + sopa + arroz + ensalada + papa/yuca. Lun–Vie 11AM–3PM.', img:'🍱', badges:['star'] },
-  // Burgers
+  { id:'eje', cat:'parrilla', name:'Ejecutivo Budare', price:22000, desc:'90g carne + sopa + arroz + ensalada + papa/yuca.', img:'🍱', badges:['star'] },
   { id:'pat', cat:'burger', name:'La Patrona', price:32000, desc:'Res 150g · Cheddar · Tocino caramelizado · Salsa Budare.', img:'🍔', badges:['hot','star'] },
   { id:'mes', cat:'burger', name:'La Mestiza', price:31000, desc:'Res 100g + Chorizo artesanal 100g · Mozzarella · Pesto.', img:'⚡', badges:['new'] },
   { id:'bra', cat:'burger', name:'Las Braseras', price:27000, desc:'Papas + proteína al carbón + tocino + mozzarella.', img:'🍟', badges:['new'] },
-  // Bebidas
   { id:'lim', cat:'bebidas', name:'Limonada Natural', price:5000, desc:'Limón · agua · panela. 350ml.', img:'🍋', badges:[] },
   { id:'jug', cat:'bebidas', name:'Jugo Natural', price:5500, desc:'Maracuyá · lulo · naranja. 350ml.', img:'🍊', badges:[] },
   { id:'gas', cat:'bebidas', name:'Gaseosa', price:4000, desc:'Coca-Cola · Sprite · Colombiana. 350ml.', img:'🥤', badges:[] },
@@ -42,7 +38,7 @@ function createDummyImage(emoji) {
 
 /* ─── CART STATE ────────────────────── */
 let cart = {};
-let cartStep = 1; // current checkout step
+let cartStep = 1;
 
 function saveCart() {
   try { localStorage.setItem('budare_cart', JSON.stringify(cart)); } catch(e) {}
@@ -107,7 +103,7 @@ function showToast(msg) {
 function pulseCartBadge() {
   const badge = document.getElementById('cartCount');
   badge.classList.remove('pulse');
-  void badge.offsetWidth; // force reflow
+  void badge.offsetWidth;
   badge.classList.add('pulse');
 }
 
@@ -125,16 +121,13 @@ function updateUI(id) {
   });
 }
 
-/* ─── BADGE HTML ────────────────────── */
 function badgeHTML(badges) {
   const map = { hot:'<span class="badge b-hot">🔥 Más vendido</span>', star:'<span class="badge b-star">⭐ Recomendado</span>', new:'<span class="badge b-new">Nuevo</span>' };
   return badges.map(b => map[b] || '').filter(Boolean).join('');
 }
 
-/* ─── FORMAT PRICE ──────────────────── */
 function fmtPrice(p) { return '$' + p.toLocaleString('es-CO'); }
 
-/* ─── CTRL HTML ─────────────────────── */
 function ctrlHTML(id) {
   const qty = cart[id] || 0;
   return qty === 0
@@ -146,7 +139,6 @@ function ctrlHTML(id) {
       </div>`;
 }
 
-/* ─── RENDER MENU ───────────────────── */
 function renderMenu() {
   const topItems = MENU.filter(p => p.cat === 'top');
   document.getElementById('strip-top').innerHTML = topItems.map(p => `
@@ -181,16 +173,13 @@ function renderMenu() {
     });
 }
 
-/* ─── CART BAR ──────────────────────── */
 function updateCartBar() {
   const count = cartCount();
-  const bar = document.getElementById('cart-bar');
   document.getElementById('cartCount').textContent = count;
   document.getElementById('cartBarTotal').textContent = fmtPrice(cartTotal());
-  bar.classList.toggle('empty', count === 0);
+  document.getElementById('cart-bar').classList.toggle('empty', count === 0);
 }
 
-/* ─── CART PANEL ────────────────────── */
 function openCart() {
   if (cartCount() === 0) { showToast('🛒 Agrega productos primero'); return; }
   renderCartBody();
@@ -251,7 +240,11 @@ function selectPay(method) {
 function openCheckout() {
   closeCart();
   cartStep = 1;
-  // Pre-fill table from URL
+  selectedPay = 'Efectivo'; // reinicio seguro
+  document.getElementById('payEfectivo').classList.add('selected');
+  document.getElementById('payTransfer').classList.remove('selected');
+  document.getElementById('payNequi').classList.remove('selected');
+
   const tableFromURL = getTableFromURL();
   const tableField = document.getElementById('fieldTable');
   const hintTable = document.getElementById('hintTable');
@@ -260,6 +253,7 @@ function openCheckout() {
     hintTable.textContent = 'Mesa detectada de la URL';
     hintTable.classList.add('show');
   } else {
+    tableField.value = '';
     hintTable.classList.remove('show');
   }
   resetCheckoutUI();
@@ -278,18 +272,15 @@ function closeCheckout() {
 }
 
 function resetCheckoutUI() {
-  // Step indicator
   document.getElementById('stepDot1').className = 'step active';
   document.getElementById('stepDot2').className = 'step';
   document.getElementById('stepLine').className = 'step-line';
   document.getElementById('stepLabel1').className = 'step-label active';
   document.getElementById('stepLabel2').className = 'step-label';
-  // Visibility
   document.getElementById('checkoutStep1').style.display = 'block';
   document.getElementById('checkoutStep2').style.display = 'none';
   document.getElementById('checkoutBackBtn').style.visibility = 'hidden';
   document.getElementById('checkoutTitle').textContent = 'Confirmar Pedido';
-  // Errors
   document.getElementById('errName').classList.remove('show');
   document.getElementById('errPay').classList.remove('show');
   document.getElementById('fieldName').classList.remove('error');
@@ -299,7 +290,6 @@ function checkoutGoStep2() {
   const name = document.getElementById('fieldName').value.trim();
   let valid = true;
 
-  // Validate name
   if (!name) {
     document.getElementById('errName').classList.add('show');
     document.getElementById('fieldName').classList.add('error');
@@ -309,7 +299,6 @@ function checkoutGoStep2() {
     document.getElementById('fieldName').classList.remove('error');
   }
 
-  // Validate payment method selected
   if (!selectedPay) {
     document.getElementById('errPay').classList.add('show');
     valid = false;
@@ -319,19 +308,16 @@ function checkoutGoStep2() {
 
   if (!valid) return;
 
-  // Update UI to step 2
   cartStep = 2;
   document.getElementById('checkoutStep1').style.display = 'none';
   document.getElementById('checkoutStep2').style.display = 'block';
   document.getElementById('checkoutBackBtn').style.visibility = 'visible';
   document.getElementById('checkoutTitle').textContent = 'Confirma tu pedido';
-  // Step indicator
   document.getElementById('stepDot1').className = 'step done';
   document.getElementById('stepDot2').className = 'step active';
   document.getElementById('stepLine').className = 'step-line done';
   document.getElementById('stepLabel1').className = 'step-label done';
   document.getElementById('stepLabel2').className = 'step-label active';
-  // Re-render summary
   renderCheckoutSummary();
 }
 
@@ -364,7 +350,6 @@ function sendOrder() {
   const table   = document.getElementById('fieldTable').value.trim();
   const notes   = document.getElementById('fieldNotes').value.trim();
 
-  // Validations
   if (!name) {
     document.getElementById('errName').classList.add('show');
     document.getElementById('fieldName').classList.add('error');
@@ -373,7 +358,6 @@ function sendOrder() {
   }
   if (cartCount() === 0) { showToast('❌ Agrega productos al carrito'); return; }
 
-  // Build product lines
   const lines = Object.entries(cart).map(([id, qty]) => {
     const p = getProduct(id);
     return p ? `- ${p.name} ×${qty} — ${fmtPrice(p.price * qty)}` : '';
@@ -381,14 +365,10 @@ function sendOrder() {
 
   if (!lines) { showToast('❌ Error al procesar el pedido'); return; }
 
-  // Order number
   const orderNumber = getNextOrderNumber();
-
-  // Current time
   const now = new Date();
   const timeStr = now.toLocaleTimeString('es-CO', { hour:'2-digit', minute:'2-digit', hour12:true });
 
-  // Build WhatsApp message (structured for kitchen)
   const msg =
     `🧾 *PEDIDO #${orderNumber}*\n` +
     (table ? `📍 *Mesa: ${table}*\n\n` : `📍 *Mesa: No especificada*\n\n`) +
@@ -399,12 +379,11 @@ function sendOrder() {
     `🕒 *Hora:* ${timeStr}` +
     (notes ? `\n\n📝 *Notas:* ${notes}` : '');
 
-  // WhatsApp number — ⚠️ CAMBIAR POR EL NÚMERO REAL
+  // ⚠️ CAMBIAR POR NÚMERO REAL
   const WA_NUMBER = '573215290456';
   const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
   window.open(url, '_blank');
 
-  // Reset
   cart = {}; saveCart();
   closeCheckout();
   updateCartBar();
@@ -439,4 +418,15 @@ function initTabs() {
   document.querySelectorAll('section[data-cat]').forEach(s => obs.observe(s));
 }
 
-/* ─── INIT ────────────────────
+/* ─── INIT ──────────────────────────── */
+document.addEventListener('DOMContentLoaded', () => {
+  loadCart();
+  renderMenu();
+  updateCartBar();
+  initTabs();
+
+  const tableFromURL = getTableFromURL();
+  if (tableFromURL) {
+    document.getElementById('fieldTable').value = tableFromURL;
+  }
+});
