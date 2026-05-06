@@ -12,8 +12,10 @@
 </head>
 <body>
 
+<!-- Toast notification -->
 <div id="toast">✓ Producto agregado</div>
 
+<!-- HEADER -->
 <header class="app-header">
   <div class="header-brand">
     <div class="header-logo">🔥</div>
@@ -22,6 +24,7 @@
   <div class="header-status">Abierto</div>
 </header>
 
+<!-- CATEGORY TABS -->
 <nav class="cat-bar" id="catBar">
   <button class="cat-tab active" data-cat="top">🔥 Más Vendidos</button>
   <button class="cat-tab" data-cat="parrilla">🍖 Parrillas</button>
@@ -29,35 +32,29 @@
   <button class="cat-tab" data-cat="bebidas">🥤 Bebidas</button>
 </nav>
 
+<!-- MENU CONTENT -->
 <main id="menuMain">
   <section class="section" id="sec-top" data-cat="top">
-    <div class="section-title">
-      <span class="s-icon">🔥</span> Más Vendidos
-    </div>
+    <div class="section-title"><span class="s-icon">🔥</span> Más Vendidos</div>
     <div class="products-strip" id="strip-top"></div>
   </section>
   <section class="section" id="sec-parrilla" data-cat="parrilla">
-    <div class="section-title">
-      <span class="s-icon">🍖</span> Parrillas
-    </div>
+    <div class="section-title"><span class="s-icon">🍖</span> Parrillas</div>
     <div class="products-grid" id="grid-parrilla"></div>
   </section>
   <section class="section" id="sec-burger" data-cat="burger">
-    <div class="section-title">
-      <span class="s-icon">🍔</span> Hamburguesas
-    </div>
+    <div class="section-title"><span class="s-icon">🍔</span> Hamburguesas</div>
     <div class="products-grid" id="grid-burger"></div>
   </section>
   <section class="section" id="sec-bebidas" data-cat="bebidas">
-    <div class="section-title">
-      <span class="s-icon">🥤</span> Bebidas
-    </div>
+    <div class="section-title"><span class="s-icon">🥤</span> Bebidas</div>
     <div class="products-grid" id="grid-bebidas"></div>
   </section>
   <div class="page-end"></div>
 </main>
 
-<div id="cart-bar" class="hidden" onclick="openCart()">
+<!-- FLOATING CART BAR (always visible) -->
+<div id="cart-bar" onclick="openCart()">
   <div class="cart-bar-left">
     <span class="cart-count" id="cartCount">0</span>
     <span class="cart-bar-label">Ver mi pedido</span>
@@ -65,6 +62,7 @@
   <span class="cart-bar-total" id="cartBarTotal">$0</span>
 </div>
 
+<!-- CART PANEL (drawer) -->
 <div id="cart-overlay" onclick="closeCart()"></div>
 <div id="cart-panel">
   <div class="panel-drag"></div>
@@ -75,52 +73,80 @@
   <div class="panel-body" id="cartBody"></div>
 </div>
 
+<!-- CHECKOUT PANEL (2 steps) -->
 <div id="checkout-overlay" onclick="closeCheckout()"></div>
 <div id="checkout-panel">
   <div class="panel-drag"></div>
   <div class="panel-header">
-    <button class="panel-close" onclick="closeCheckout()">← Volver</button>
-    <span class="panel-title">Confirmar Pedido</span>
+    <button class="panel-close" id="checkoutBackBtn" onclick="checkoutGoBack()" style="visibility:hidden">←</button>
+    <span class="panel-title" id="checkoutTitle">Confirmar Pedido</span>
     <div style="width:30px"></div>
   </div>
   <div class="form-section">
-    <div class="order-summary" id="checkoutSummary"></div>
-    <div class="form-group">
-      <label class="form-label">Nombre</label>
-      <input class="form-input" id="fieldName" type="text" placeholder="Tu nombre" autocomplete="given-name">
-      <div class="field-error" id="errName">Por favor ingresa tu nombre</div>
+
+    <!-- STEP INDICATOR -->
+    <div class="step-indicator" id="stepIndicator">
+      <div class="step active" id="stepDot1"><span>1</span></div>
+      <div class="step-line" id="stepLine"></div>
+      <div class="step" id="stepDot2"><span>2</span></div>
     </div>
-    <div class="form-group">
-      <label class="form-label">Dirección de entrega (opcional)</label>
-      <input class="form-input" id="fieldAddress" type="text" placeholder="Dirección o 'Para recoger en el local'">
+    <div class="step-labels">
+      <span class="step-label active" id="stepLabel1">Tus datos</span>
+      <span class="step-label" id="stepLabel2">Confirmar</span>
     </div>
-    <div class="form-group">
-      <label class="form-label">Método de pago</label>
-      <div class="pay-options">
-        <div class="pay-opt selected" id="payEfectivo" onclick="selectPay('Efectivo')">
-          <div class="pay-opt-icon">💵</div>
-          <div class="pay-opt-label">Efectivo</div>
-        </div>
-        <div class="pay-opt" id="payTransfer" onclick="selectPay('Transferencia')">
-          <div class="pay-opt-icon">📲</div>
-          <div class="pay-opt-label">Transferencia</div>
-        </div>
+
+    <!-- STEP 1: CUSTOMER DATA -->
+    <div id="checkoutStep1">
+      <div class="form-group">
+        <label class="form-label">Nombre *</label>
+        <input class="form-input" id="fieldName" type="text" placeholder="Tu nombre" autocomplete="given-name">
+        <div class="field-error" id="errName">Por favor ingresa tu nombre</div>
       </div>
+      <div class="form-group">
+        <label class="form-label">Mesa / N°</label>
+        <input class="form-input" id="fieldTable" type="text" placeholder="Ej: 5" inputmode="numeric">
+        <div class="field-hint" id="hintTable">Se obtuvo de la URL</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Método de pago *</label>
+        <div class="pay-options">
+          <div class="pay-opt selected" id="payEfectivo" onclick="selectPay('Efectivo')">
+            <div class="pay-opt-icon">💵</div>
+            <div class="pay-opt-label">Efectivo</div>
+          </div>
+          <div class="pay-opt" id="payTransfer" onclick="selectPay('Transferencia')">
+            <div class="pay-opt-icon">📲</div>
+            <div class="pay-opt-label">Transf.</div>
+          </div>
+          <div class="pay-opt" id="payNequi" onclick="selectPay('Nequi / Daviplata')">
+            <div class="pay-opt-icon">💜</div>
+            <div class="pay-opt-label">Nequi</div>
+          </div>
+        </div>
+        <div class="field-error" id="errPay">Selecciona un método de pago</div>
+      </div>
+      <button class="checkout-btn" onclick="checkoutGoStep2()">
+        Continuar →
+      </button>
     </div>
-    <div class="form-group">
-      <label class="form-label">Notas adicionales (opcional)</label>
-      <input class="form-input" id="fieldNotes" type="text" placeholder="Ej: sin cebolla, bien cocido...">
+
+    <!-- STEP 2: ORDER CONFIRMATION -->
+    <div id="checkoutStep2" style="display:none">
+      <div class="order-summary" id="checkoutSummary"></div>
+      <div class="form-group">
+        <label class="form-label">Notas adicionales (opcional)</label>
+        <input class="form-input" id="fieldNotes" type="text" placeholder="Ej: sin cebolla, bien cocido...">
+      </div>
+      <button class="send-btn" onclick="sendOrder()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+        </svg>
+        🔥 Confirmar y enviar a cocina
+      </button>
     </div>
-    <button class="send-btn" onclick="sendOrder()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51a12.8 12.8 0 00-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-      </svg>
-      Enviar pedido por WhatsApp
-    </button>
-    <button class="clear-btn" onclick="closeCheckout()">Volver al menú</button>
   </div>
 </div>
 
 <script src="app.js"></script>
 </body>
-</html>
+  </html>
