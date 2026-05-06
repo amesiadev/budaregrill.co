@@ -318,7 +318,7 @@ function sendOrder() {
     `💳 Pago: ${selectedPay}${notes ? '\n📝 Notas: ' + notes : ''}`;
   
   // ⚠️ CAMBIAR POR EL NÚMERO REAL DE WHATSAPP
-  const WA_NUMBER = '573001234567';
+  const WA_NUMBER = '573215290456';
   window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   
   // Reset
