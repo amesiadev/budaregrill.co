@@ -12,10 +12,8 @@
 </head>
 <body>
 
-<!-- Toast notification -->
 <div id="toast">✓ Producto agregado</div>
 
-<!-- HEADER -->
 <header class="app-header">
   <div class="header-brand">
     <div class="header-logo">🔥</div>
@@ -24,7 +22,6 @@
   <div class="header-status">Abierto</div>
 </header>
 
-<!-- CATEGORY TABS -->
 <nav class="cat-bar" id="catBar">
   <button class="cat-tab active" data-cat="top">🔥 Más Vendidos</button>
   <button class="cat-tab" data-cat="parrilla">🍖 Parrillas</button>
@@ -32,7 +29,6 @@
   <button class="cat-tab" data-cat="bebidas">🥤 Bebidas</button>
 </nav>
 
-<!-- MENU CONTENT -->
 <main id="menuMain">
   <section class="section" id="sec-top" data-cat="top">
     <div class="section-title"><span class="s-icon">🔥</span> Más Vendidos</div>
@@ -53,7 +49,6 @@
   <div class="page-end"></div>
 </main>
 
-<!-- FLOATING CART BAR (always visible) -->
 <div id="cart-bar" onclick="openCart()">
   <div class="cart-bar-left">
     <span class="cart-count" id="cartCount">0</span>
@@ -62,7 +57,6 @@
   <span class="cart-bar-total" id="cartBarTotal">$0</span>
 </div>
 
-<!-- CART PANEL (drawer) -->
 <div id="cart-overlay" onclick="closeCart()"></div>
 <div id="cart-panel">
   <div class="panel-drag"></div>
@@ -73,7 +67,6 @@
   <div class="panel-body" id="cartBody"></div>
 </div>
 
-<!-- CHECKOUT PANEL (2 steps) -->
 <div id="checkout-overlay" onclick="closeCheckout()"></div>
 <div id="checkout-panel">
   <div class="panel-drag"></div>
@@ -83,8 +76,6 @@
     <div style="width:30px"></div>
   </div>
   <div class="form-section">
-
-    <!-- STEP INDICATOR -->
     <div class="step-indicator" id="stepIndicator">
       <div class="step active" id="stepDot1"><span>1</span></div>
       <div class="step-line" id="stepLine"></div>
@@ -95,12 +86,11 @@
       <span class="step-label" id="stepLabel2">Confirmar</span>
     </div>
 
-    <!-- STEP 1: CUSTOMER DATA -->
     <div id="checkoutStep1">
       <div class="form-group">
         <label class="form-label">Nombre *</label>
         <input class="form-input" id="fieldName" type="text" placeholder="Tu nombre" autocomplete="given-name">
-        <div class="field-error" id="errName">Por favor ingresa tu nombre</div>
+        <div class="field-error" id="errName">⚠️ Por favor ingresa tu nombre</div>
       </div>
       <div class="form-group">
         <label class="form-label">Mesa / N°</label>
@@ -123,14 +113,13 @@
             <div class="pay-opt-label">Nequi</div>
           </div>
         </div>
-        <div class="field-error" id="errPay">Selecciona un método de pago</div>
+        <div class="field-error" id="errPay">⚠️ Selecciona un método de pago</div>
       </div>
       <button class="checkout-btn" onclick="checkoutGoStep2()">
         Continuar →
       </button>
     </div>
 
-    <!-- STEP 2: ORDER CONFIRMATION -->
     <div id="checkoutStep2" style="display:none">
       <div class="order-summary" id="checkoutSummary"></div>
       <div class="form-group">
